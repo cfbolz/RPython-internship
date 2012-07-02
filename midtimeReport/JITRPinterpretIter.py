@@ -130,7 +130,7 @@ def GetFunc(funDict,name):
 
 # JITing instructions
 
-jitdriver = JitDriver(greens=['funDict'], reds=['val','cont','env', 'expr'])
+jitdriver = JitDriver(greens=['funDict', 'expr'], reds=['val','cont','env'])
 
 def Interpk(expr, funDict, env):
     """ Interpret the ifF1WAE AST given a set of defined functions. We use deferred substituion and eagerness."""
@@ -142,10 +142,11 @@ def Interpk(expr, funDict, env):
     cont = Idk()
 
     #value-of/k
-    while not(isinstance(cont,Endk)):
+    while 1:
         #
-        jitdriver.can_enter_jit(val=val, expr=expr, env=env, cont=cont, funDict=funDict)
         jitdriver.jit_merge_point(val=val, expr=expr, env=env, cont=cont, funDict=funDict)
+        if isinstance(cont, Endk):
+            break
         #
         if isinstance(expr, treeClass.Num):
             val = expr.n
@@ -186,6 +187,7 @@ def Interpk(expr, funDict, env):
             arg = fun.argName
             expr = expr.arg
             cont = Appk(body, cont, arg)
+            jitdriver.can_enter_jit(val=val, expr=expr, env=env, cont=cont, funDict=funDict)
         #
         else: # Not an <ifF1WAE>
             print("Argument of Interpk is not a <ifF1WAE>:\n")
