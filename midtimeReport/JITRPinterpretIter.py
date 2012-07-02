@@ -130,6 +130,11 @@ def GetFunc(funDict,name):
 
 # JITing instructions
 
+
+def get_printable_location(funDict, expr):
+    # would be better to pretty-print the AST here
+    return str(expr.__class__)
+
 jitdriver = JitDriver(greens=['funDict', 'expr'], reds=['val','cont','env'])
 
 def Interpk(expr, funDict, env):
@@ -160,7 +165,7 @@ def Interpk(expr, funDict, env):
             if expr.name in env.keys():
                 val = (env[expr.name])
             else:
-                print("Interpret Error: free identifier :\n" + tree.name)
+                print("Interpret Error: free identifier :\n" + expr.name)
             ex, en, co, va = cont.apply(expr,env,val) 
             expr = ex
             env = en
