@@ -163,9 +163,9 @@ def Interpk(expr, funDict, env):
             val = va
         #
         elif isinstance(expr, treeClass.Id):
-            if expr.name in env.keys():
-                val = (env[expr.name])
-            else:
+            try:
+                val = env[expr.name]
+            except KeyError:
                 print("Interpret Error: free identifier :\n" + expr.name)
             ex, en, co, va = cont.apply(expr,env,val) 
             expr = ex
@@ -186,14 +186,16 @@ def Interpk(expr, funDict, env):
             expr = expr.lhs
         #
         elif isinstance(expr, treeClass.App):
-            if not expr.funName in funDict.keys():
+            fun = funDict.get(expr.funName, None)
+            if fun is None:
                 print("Inexistant function : "+expr.funName)
-            fun = funDict[expr.funName]
-            body = fun.body
-            arg = fun.argName
-            expr = expr.arg
-            cont = Appk(body, cont, arg)
-            jitdriver.can_enter_jit(val=val, expr=expr, env=env, cont=cont, funDict=funDict)
+                cont = Endk(2)
+            else:
+                body = fun.body
+                arg = fun.argName
+                expr = expr.arg
+                cont = Appk(body, cont, arg)
+                jitdriver.can_enter_jit(val=val, expr=expr, env=env, cont=cont, funDict=funDict)
         #
         else: # Not an <ifF1WAE>
             print("Argument of Interpk is not a <ifF1WAE>:\n")
