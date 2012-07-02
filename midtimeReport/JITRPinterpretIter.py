@@ -133,9 +133,10 @@ def GetFunc(funDict,name):
 
 def get_printable_location(funDict, expr):
     # would be better to pretty-print the AST here
-    return str(expr.__class__)
+    return str(expr)
 
-jitdriver = JitDriver(greens=['funDict', 'expr'], reds=['val','cont','env'])
+jitdriver = JitDriver(greens=['funDict', 'expr'], reds=['val','cont','env'],
+        get_printable_location=get_printable_location)
 
 def Interpk(expr, funDict, env):
     """ Interpret the ifF1WAE AST given a set of defined functions. We use deferred substituion and eagerness."""
