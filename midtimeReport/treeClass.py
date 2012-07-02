@@ -41,31 +41,38 @@ class Leaf(ifF1WAE):
         pass
 
 class Num(Leaf):
+    _immutable_fields_ = ["n"]
+
     def __init__(self, n):
         self.n=n # Int
 
 class Id(Leaf):
+    _immutable_fields_ = ["name"]
     def __init__(self, name):
         self.name=name # Id
 
 class Op(Node):
+    _immutable_fields_ = ["op", "lhs", "rhs"]
     def __init__(self, op, lhs, rhs):
         self.op=op # Op
         self.lhs=lhs # ifF1WAE
         self.rhs=rhs # ifF1WAE
 
 class With(Node):
+    _immutable_fields_ = ["name", "nameExpr", "body"]
     def __init__(self, name, nameExpr, body):
         self.name=name # Id
         self.nameExpr=nameExpr # ifF1WAE
         self.body=body # ifF1WAE
 
 class App(Node):
+    _immutable_fields_ = ["funName", "arg"]
     def __init__(self, funName, arg):
         self.funName=funName # Id, name of a function
         self.arg=arg # ifF1WAE
 
 class If(Node):
+    _immutable_fields_ = ["cond", "ctrue", "cfalse"]
     def __init__(self, cond, ctrue, cfalse):
         self.cond=cond # Condition
         self.ctrue=ctrue # If condition is true
